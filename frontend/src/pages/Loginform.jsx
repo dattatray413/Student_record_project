@@ -2,26 +2,45 @@ import { useState } from 'react'
 import "./Login.css"
 import { Link } from "react-router-dom"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 function Loginform() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-
-    const handleSubmit = (e) =>{
-        e.preventDefault();
-        if (password === confirmPassword) {
-
-        axios.post('http://localhost:3001/register',{name, email, password})
-        .then(result => console.log(result))
-        .catch(err => console.log(err))
-        }
-        else{
-          alert("password not match");
-        }
+    const [isLogin, setIsLogin] = useState(true);
+    const navigate = useNavigate();
+    
+    const handleLogin = async (e) =>{
+      e.preventDefault();
+       try{
+          const result = await axios.post("http://localhost:3001/login",{email, password})
+           console.log(result)
+           if(result.data.status === "success"){
+            navigate('/home')
+           }
+          }catch(err){
+             console.log(err)
+          }
     }
-     const [isLogin, setIsLogin] = useState(true);
+
+    const handleSubmit = async (e) =>{ 
+      e.preventDefault(); 
+      if (password === confirmPassword){
+         try{
+          const result = await axios.post("http://localhost:3001/register",{name, email, password})
+          console.log(result)
+          if(result.data.status === "success"){
+            navigate('/');
+          }
+          }catch(err){
+             console.log(err)
+          }
+      } 
+      else{ alert("password not match");
+      } 
+    };
 
   return (
     <>
@@ -35,7 +54,7 @@ function Loginform() {
             {isLogin?(
              <div className='form'>
                 <h2 className='form-h2'>Login</h2>
-                <form className='form' onSubmit={handleSubmit}>
+                <form className='form' onSubmit={handleLogin}>
                 <input 
                   className='form-input' 
                   type='email' 
@@ -48,8 +67,8 @@ function Loginform() {
                 placeholder='password'
                 onChange={(e) => setPassword(e.target.value)}
                 />
-                <Link to="/Forgot">Forgot Password?</Link>
-                <button className="form-button">Login</button>
+                <Link to="/Forgot-Password">Forgot Password?</Link>
+                <button className="form-button" type="submit">Login</button>
                 <p>Not a user? <a href='#' onClick={()=>setIsLogin(false)}>Register</a></p>
                 </form>
              </div>
@@ -61,8 +80,8 @@ function Loginform() {
                 <input
                   className='form-input'
                   type='text' 
-                  placeholder='Name' 
-                  onChange={(e) => setName(e.target.value)}
+                  placeholder='Full Name' 
+                  onChange={(e) => setName(e.target.value)} 
                 />
                 <input
                   className='form-input'
