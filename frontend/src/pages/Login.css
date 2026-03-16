@@ -1,10 +1,6 @@
 
 body {
   font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
   margin: 0;
   background-color: #acd4f4;
 }
@@ -86,6 +82,14 @@ body {
   text-align: center;
 }
 
-.otpverify {
-  display: none;
+.form-radio {
+  margin-right: 6px;
+}
+
+.link-p {
+  color: #007bff;
+}
+
+.err-p {
+  color: red;
 }

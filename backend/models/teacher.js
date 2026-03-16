@@ -1,7 +1,6 @@
-// import mongoose from "mongoose"
-const mongoose = require('mongoose')
+import mongoose from "mongoose";
 
-const studentSchema = new mongoose.Schema({
+const teacherSchema = new mongoose.Schema({
     name: {type: String,
            required: true
         },
@@ -14,7 +13,8 @@ const studentSchema = new mongoose.Schema({
                minLength: 6,
             },
     role: {type: String,
-           default: "student"
+           required: true,
+           default: "teacher"
 
     }       
 },
@@ -24,8 +24,6 @@ const studentSchema = new mongoose.Schema({
 }
 )
 
-const studentModel = mongoose.model("student", studentSchema);
-module.exports = studentModel;
-
-// if we are using the module met
-// export default studentModel
+const teacherModel = mongoose.model("teacher", teacherSchema);
+// module.exports = teacherModel;
+export default teacherModel

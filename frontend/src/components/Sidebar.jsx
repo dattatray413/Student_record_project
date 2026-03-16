@@ -1,6 +1,19 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Sidebar() {
+
+  const navigate = useNavigate();
+  const handleLogout = async (e)=>{
+    try {
+      const result = await axios.get("http://localhost:3000/auth/logout")
+      if(result.data.status === "logged out successfully"){
+        navigate("/");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
   return (
     <div className="w-64 h-screen bg-gray-900 text-white p-5">
 
@@ -27,6 +40,12 @@ function Sidebar() {
             Documents
           </Link>
         </li>
+
+        <li>
+            {/* your dashboard UI */}
+            <button onClick={handleLogout}>Logout</button> {/* ✅ just add this button */}
+        </li>
+
 
       </ul>
 

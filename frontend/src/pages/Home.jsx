@@ -1,14 +1,38 @@
 // import React from 'react'
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import axios from "axios";
+import Sidebar from "../components/sidebar";
+import Navbar from "../components/navbar";
 
 function Home() {
-  return (
-    <>
-    <div className="">
-        <div className="flex-1 text-[25px] text-blue-900 py-2 ">
-            <Link to="/">Login/Signup</Link>
-        </div>
 
+  const navigate = useNavigate();
+    axios.defaults.withCredentials = true;
+    useEffect(() => {
+      const fetchDashboard = async () => {
+        try {
+          const result = await axios.get("http://localhost:3000/auth/student-dashboard")
+          if (result.data.status === "success") {
+            console.log("success");
+          }
+        } catch (err) {
+          console.log(err);
+          navigate('/');
+        }
+      }
+       fetchDashboard();
+  
+    }, [])
+
+  return (
+  <>
+  <div className="flex">
+    <Sidebar />
+    
+    <div className="flex-1">
+      <Navbar />
       <h1 className="text-2xl font-bold mb-4">
         Students
       </h1>
@@ -40,9 +64,9 @@ function Home() {
         </tbody>
 
       </table>
-
     </div>
-    </>
+  </div>
+  </>
   )
 }
 
