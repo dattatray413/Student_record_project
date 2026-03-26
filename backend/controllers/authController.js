@@ -17,11 +17,15 @@ const login = async (req, res) => {
       if (user) {
         const match = await bcrypt.compare(password, user.password, (err, response) => {
           if (response) {
-            // const token = jwt.sign({ email: user.email, role: user.role },
-            //   process.env.JWT_SECRET, { expiresIn: "1h" });
-            const token = jwttoken;
-            res.cookie('token', token);
-            return res.json({status: "student login success",token: token, role: role});
+            const token = jwt.sign({ email: user.email, role: user.role },
+              process.env.JWT_SECRET, { expiresIn: "1h" });
+            // const token = jwttoken;
+            res.cookie('token', token, {
+              httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000,
+            sameSite: 'lax'
+            });
+            return res.json({ status: "student login success", token: token, role });
           } else {
             return res.json("password is incorrect");
           }
@@ -32,13 +36,17 @@ const login = async (req, res) => {
     } else {
       const user = await teacherModel.findOne({ email: email });
       if (user) {
-         const match = await bcrypt.compare(password, user.password, (err, response) => {
+        const match = await bcrypt.compare(password, user.password, (err, response) => {
           if (response) {
-            // const token = jwt.sign({ email: user.email, role: user.role },
-            //   process.env.JWT_SECRET, { expiresIn: "1h" });
-            const token = jwttoken;
-            res.cookie('token', token);
-            return res.json({status: "teacher login success",token: token, role: role});
+            const token = jwt.sign({ email: user.email, role: user.role },
+              process.env.JWT_SECRET, { expiresIn: "1h" });
+            // const token = jwttoken;
+            res.cookie('token', token, {
+              httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000,
+            sameSite: 'lax'
+            });
+            return res.json({ status: "teacher login success", token: token, role });
           } else {
             return res.json("password is incorres");
           }
@@ -57,15 +65,49 @@ const login = async (req, res) => {
 const register = async (req, res) => {
   try {
     console.log("Incoming Data:", req.body);
-    const { name, email, password, role } = req.body;
+    const {
+      fullName,
+      email,
+      password,
+      role,
+      phone,
+      gender,
+      dob,
+      course,
+      address,
+      tenthPercentage,
+      twelfthPercentage,
+      idType,
+    } = req.body;
+
     const hash = await bcrypt.hash(password, 10);
     try {
       if (role === 'student') {
-        const student = await studentModel.create({ name, email, password: hash });
-        return res.send({ status: "success" });
+        const student = await studentModel.create({
+          fullName,
+          email,
+          password: hash,
+          role,
+          phone,
+          gender,
+          dob,
+          course,
+          address,
+          tenthPercentage,
+          twelfthPercentage,
+          idType,
+
+          // file paths
+          tenthMarksheet: req.files.tenthMarksheet?.[0]?.filename,
+          twelfthMarksheet: req.files.twelfthMarksheet?.[0]?.filename,
+          transferCertificate: req.files.transferCertificate?.[0]?.filename,
+          passportPhoto: req.files.passportPhoto?.[0]?.filename,
+          idProof: req.files.idProof?.[0]?.filename,
+        });
+        return res.json({ status: "success" });
       } else {
-        const teacher = await teacherModel.create({ name, email, password: hash });
-        return res.send({ status: "success" });
+        const teacher = await teacherModel.create({ fullName, email, password: hash });
+        return res.json({ status: "success" });
       }
     } catch (err) {
       console.log("ERROR:", err);
@@ -85,10 +127,10 @@ const forgotPassword = async (req, res) => {
     const { email } = req.body;
     let user = await studentModel.findOne({ email: email });
 
-    if(!user){
+    if (!user) {
       user = await teacherModel.findOne({ email: email });
     }
-    
+
     if (!user) {
       return res.send({ status: "user does not exist" });
     }
@@ -154,24 +196,24 @@ const verifyOtp = async (req, res) => {
   }
 }
 
-const logout = async (req,res) =>{
+const logout = async (req, res) => {
   res.clearCookie("token");
-  return res.json({status: "logged out successfully"})
+  return res.json({ status: "logged out successfully" })
 }
 
-const resetPassword = async (req, res)=>{
-  const{email, password} = req.body
-  if(!email || !password){
-    return res.json({status: "email and password are needed"})
+const resetPassword = async (req, res) => {
+  const { email, password } = req.body
+  if (!email || !password) {
+    return res.json({ status: "email and password are needed" })
   }
 
   try {
     let user = await studentModel.findOne({ email: email });
 
-    if(!user){
+    if (!user) {
       user = await teacherModel.findOne({ email: email });
     }
-    
+
     if (!user) {
       return res.send({ status: "user does not exist" });
     }
@@ -179,7 +221,7 @@ const resetPassword = async (req, res)=>{
     user.password = hashPassword;
     await user.save();
 
-    return res.json({status: "success"})
+    return res.json({ status: "success" })
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
@@ -214,4 +256,4 @@ const resetPassword = async (req, res)=>{
 // };
 
 // export {login, register};
-export {login, register, forgotPassword, verifyOtp, logout, resetPassword};
+export { login, register, forgotPassword, verifyOtp, logout, resetPassword };

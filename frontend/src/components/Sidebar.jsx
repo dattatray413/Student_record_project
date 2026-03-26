@@ -7,6 +7,7 @@ function Sidebar() {
   const handleLogout = async (e)=>{
     try {
       const result = await axios.get("http://localhost:3000/auth/logout")
+      console.log("logout:",result.data.status);
       if(result.data.status === "logged out successfully"){
         navigate("/");
       }
@@ -24,26 +25,20 @@ function Sidebar() {
       <ul className="space-y-4">
 
         <li>
-          <Link to="/" className="hover:text-blue-400">
-            Dashboard
-          </Link>
-        </li>
-
-        <li>
-          <Link to="/students" className="hover:text-blue-400">
+          <Link to="/all-students" className="hover:text-blue-400">
             Students
           </Link>
         </li>
 
         <li>
-          <Link to="/documents" className="hover:text-blue-400">
-            Documents
+          <Link to="/pending" className="hover:text-blue-400">
+            Pending Approval
           </Link>
         </li>
 
         <li>
             {/* your dashboard UI */}
-            <button onClick={handleLogout}>Logout</button> {/* ✅ just add this button */}
+            <button onClick={handleLogout} className="hover:text-blue-400">Logout</button>
         </li>
 
 

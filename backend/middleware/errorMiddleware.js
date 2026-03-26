@@ -1,6 +1,0 @@
-const errorMiddleware = (err, req, res, next) => {
-    console.error(err);
-    res.status(500).json("Server Error");
-};
-
-export default errorMiddleware;

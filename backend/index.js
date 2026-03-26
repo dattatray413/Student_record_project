@@ -4,6 +4,8 @@ import connectDB from "./db/database.js";
 import authRoutes from "./routes/auth.js";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv"
+import path from 'path';
+import { fileURLToPath } from 'url';
 dotenv.config();
 //another way of writting the backend code of commonJS
 // const express = require("express");
@@ -20,11 +22,16 @@ dotenv.config();
 const app = express();
 app.use(cors({
     origin: ["http://localhost:5173"],
-    methods: ["GET", "POST"],
     credentials: true
 }));
 app.use(express.json());
 app.use(cookieParser());
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.use('/auth', authRoutes);
 
 app.listen(process.env.PORT, () => {

@@ -1,6 +1,7 @@
-function Card({title, value, color}) {
+function Card({title, value, color, onClick}) {
   return (
-    <div className={`p-6 rounded-lg shadow text-white ${color}`}>
+    <div className={`p-6 rounded-lg shadow text-white ${color} ${onClick ? "cursor-pointer" : ""}`}
+    onClick={onClick}>
       
       <h2 className="text-lg">{title}</h2>
       

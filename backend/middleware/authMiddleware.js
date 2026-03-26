@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import cookieparser from 'cookie-parser';
 
 
-const verifyTeacher = async (req, res, next) => {
+const verifyTeacher = async(req, res, next) => {
     const token = await req.cookies.token;
 
     if (!token) {

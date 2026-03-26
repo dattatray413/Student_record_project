@@ -5,8 +5,8 @@ const teacherDashboard = async (req, res) => {
     try {
         // req.teacher is set by verifyTeacher middleware
         console.log("req.teacher:", req.teacher);
-        const teacher = await teacherModel.findById(req.teacher.id).select("-password");
-        if(!teacher.role === "teacher"){
+        const teacher = await teacherModel.findOne({ email: req.teacher.email }).select("-password");
+        if(teacher.role !== "teacher"){
             return res.json({status: "access denied"})
         }
         return res.json({ status: "success", teacher});
@@ -19,8 +19,8 @@ const teacherDashboard = async (req, res) => {
 const studentDashboard = async (req, res)=>{
     try {
         console.log("req.student:", req.student);
-        const student = await studentModel.findById(req.student.id).select("-password");
-        if(!student.role === "student"){
+        const student = await studentModel.findOne({ email: req.student.email }).select("-password");
+        if(student.role !== "student"){
             return res.json({status: "access denied"})
         }
         return res.json({ status: "success", student});
@@ -30,4 +30,4 @@ const studentDashboard = async (req, res)=>{
     }
 }
 
-export {teacherDashboard, studentDashboard};
+export {teacherDashboard, studentDashboard };
