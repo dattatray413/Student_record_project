@@ -115,4 +115,3 @@ const searchStudents = async (req, res) => {
 };
 
 export { pendingCount, studentCount, getPendingStudents, getAllStudents, getStudentById, updateStudentStatus, searchStudents };
-

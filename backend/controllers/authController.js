@@ -228,32 +228,4 @@ const resetPassword = async (req, res) => {
   }
 }
 
-//other login meethod
-// export const login = async (req, res) => {
-//   try {
-
-//     const { email, password, role } = req.body;
-//     const model = role === "student" ? studentModel : teacherModel;
-
-//     const user = await model.findOne({ email });
-//     if (!user) {
-//       return res.json({ status: "User not found" });
-//     }
-
-//     const isMatch = await bcrypt.compare(password, user.password);
-//     if (!isMatch) {
-//       return res.json({ status: "Invalid password" });
-//     }
-
-//     return res.json({ status: `${role} success` });
-//     const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: "1h"});
-//     return res.status(200).json({success: true, message: "login successful", token, user: {id: user._id, name: user.name, email: user.email, role: user.role}});
-
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json(err);
-//   }
-// };
-
-// export {login, register};
 export { login, register, forgotPassword, verifyOtp, logout, resetPassword };
